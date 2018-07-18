@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Welcome, Stranger!</h1>
+<p>Here you can find the PDF invoices for all your latest Stripe credit card transactions</p>
+
+<ul>
+    <li>TODO</li>
+</ul>
+
+<button id="stripe-button" type="button">Connect with Stripe (OAuth)</button>
+
+<script>
+
+    function getParameterByName(name) {
+        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    }
+
+    (function() {
+
+        if (getParameterByName("success") == "true") {
+            alert('you successfully connected with stripe!');
+            document.getElementById('stripe-button').style.display = "none";
+        }
+
+        document.getElementById("stripe-button").onclick = function() {
+            var clientId = "ca_D8xRhyQFUqX6eEzXCdpz43sD3HorXYq4";
+            window.location.href = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${clientId}&scope=read_write`;
+        };
+
+    })();
+
+</script>
+
+</body>
+</html>
