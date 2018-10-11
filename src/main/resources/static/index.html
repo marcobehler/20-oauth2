@@ -9,11 +9,15 @@
 <h1>Welcome, Stranger!</h1>
 <p>Here you can find the PDF invoices for all your latest Stripe credit card transactions</p>
 
-<ul>
+<ul id="charge-list">
     <li>TODO</li>
 </ul>
 
 <button id="stripe-button" type="button">Connect with Stripe (OAuth)</button>
+
+<button id="charge-button" type="button">Get latest 3 charges</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script>
 
@@ -34,9 +38,27 @@
             window.location.href = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${clientId}&scope=read_write`;
         };
 
+        $("#charge-button").click(function() {
+            $.ajax({
+                type: "GET",
+                url: "/transactions",
+                success: function(data)
+                {
+                    var $charge = $("#charge-list");
+                    $charge.empty();
+                    $.each(data, function(k, v) {
+                        $charge.append('<li>' + v + '</li>');
+                    });
+                }
+            });
+        });
+
+
+
     })();
 
 </script>
+
 
 </body>
 </html>

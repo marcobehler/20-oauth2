@@ -1,13 +1,23 @@
 package com.marcobehler.oauthdemo;
 
 import com.squareup.moshi.Moshi;
+import com.stripe.Stripe;
+import com.stripe.exception.*;
+import com.stripe.model.Charge;
+import com.stripe.model.ChargeCollection;
+import com.stripe.net.RequestOptions;
 import okhttp3.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Thanks for watching this episode! Send any feedback to info@marcobehler.com!
@@ -16,6 +26,8 @@ import java.util.Map;
 public class OAuthController {
 
     private final OkHttpClient client = new OkHttpClient();
+
+    private String stripeUserId;
 
     @GetMapping("/connect")
     public String stripeConnect(@RequestParam Map<String, String> params) throws IOException {
@@ -41,11 +53,31 @@ public class OAuthController {
             Moshi moshi = new Moshi.Builder().build();
             Map map = moshi.adapter(Map.class).fromJson(jsonResponse);
 
-            String stripeUserId = (String) map.get("stripe_user_id");
+            stripeUserId = (String) map.get("stripe_user_id");
             System.out.println("stripeUserId = " + stripeUserId);
             // add that id to a database...connect it with the currently logged on user
         }
 
         return "redirect:/?success=true";
+    }
+
+    @GetMapping("/transactions")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public List<String> transactions() throws CardException, APIException, AuthenticationException, InvalidRequestException, APIConnectionException {
+        Stripe.apiKey = "sk_test_pwd6RBvQAOgyY7CGcOfVUElF";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", 3);
+
+        RequestOptions options = RequestOptions.builder()
+                .setStripeAccount(stripeUserId)
+                .build();
+
+        ChargeCollection chargesCollection = Charge.list(params, options);
+        List<Charge> charges = chargesCollection.getData();
+
+        return charges.stream().map(charge -> new Date(charge.getCreated() * 1000).toString()
+                + " | " + charge.getDescription() + " | " + NumberFormat.getCurrencyInstance().format(charge.getAmount() / 100.00))
+                .collect(Collectors.toList());
     }
 }
