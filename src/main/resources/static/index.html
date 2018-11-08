@@ -17,6 +17,8 @@
 
 <button id="charge-button" type="button">Get latest 3 charges</button>
 
+<!--<button id="refresh-button" type="button">Refresh access token</button>-->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script>
@@ -37,6 +39,16 @@
             var clientId = "ca_D8xRhyQFUqX6eEzXCdpz43sD3HorXYq4";
             window.location.href = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${clientId}&scope=read_write`;
         };
+
+        $("#refresh-button").click(function() {
+            $.ajax({
+                type: "POST",
+                url: "/refresh",
+                success: function(data) {
+                   alert('refreshed token');
+                }
+            });
+        });
 
         $("#charge-button").click(function() {
             $.ajax({

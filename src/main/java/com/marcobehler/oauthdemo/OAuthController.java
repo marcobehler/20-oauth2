@@ -37,7 +37,7 @@ public class OAuthController {
 
         // 2nd step: authorization code -> token
         RequestBody formBody = new FormBody.Builder()
-                .add("client_secret", "sk_test_pwd6RBvQAOgyY7CGcOfVUElF")
+                .add("client_secret", "sk_test_akKkQlPSG44mzpimrIpTR1Af")
                 .add("code", authorizationCode)
                 .add("grant_type", "authorization_code")
                 .build();
@@ -64,7 +64,7 @@ public class OAuthController {
     @GetMapping("/transactions")
     @org.springframework.web.bind.annotation.ResponseBody
     public List<String> transactions() throws CardException, APIException, AuthenticationException, InvalidRequestException, APIConnectionException {
-        Stripe.apiKey = "sk_test_pwd6RBvQAOgyY7CGcOfVUElF";
+        Stripe.apiKey = "sk_test_akKkQlPSG44mzpimrIpTR1Af";
 
         Map<String, Object> params = new HashMap<>();
         params.put("limit", 3);
