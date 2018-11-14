@@ -16,12 +16,12 @@ public class SimpleApplication extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/oauth_login")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
                 .and()
-                .oauth2Login()
-                .loginPage("/oauth_login");
+                    .oauth2Login()
+                    .loginPage("/oauth_login");
     }
 
 }
